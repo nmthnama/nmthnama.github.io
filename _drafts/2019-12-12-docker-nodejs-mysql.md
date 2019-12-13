@@ -21,7 +21,7 @@ icon: icon-html
 > 이미 생성한 NodeJS 프로젝트가 있다면 Skip 가능합니다. 
 ### 1) 빈폴더(tutorial) 생성
 ### 2) 빈폴더에 들어가서 shift+마우스 우클릭 후 여기에서 명령 창 실행 클릭
-![](/assets/img/blog/2019-12-12-docker-nodejs-mysql/2019-12-12-17-46-48.png)
+![open cmd](/assets/img/blog/2019-12-12-docker-nodejs-mysql/2019-12-12-17-46-48.png)
 ### 3) nodejs 프로젝트 초기화
 > npm init 명령어를 실행하면 nodejs 프로젝트 초기 설정 입력 대기를 하는데 모두 Enter 를 눌러서 진행
 ```console
@@ -126,4 +126,33 @@ npm WARN tutorial@1.0.0 No repository field.
 + express@4.17.1
 removed 16 packages and updated 2 packages in 8.183s
 ```
-> --save 옵션은 packege.json 에 필요한 패키지를 등록해서 
+> --save 옵션은 packege.json 에 필요한 패키지를 등록
+```json
+{
+  "name": "tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.17.1"
+  }
+}
+```
+> package.json 의 dependencies 항목에 express 와 mysql 패키지가 save 된 것을 확인할 수 있다<br>
+> ※ package.json 파일이 있는 폴더에서 npm install 명령어를 수행하면 dependencies 에 등록된 패키지가 자동으로 설치된다. 즉, 어떤 패키지가 필요한 지 일일히 찾아보지 않고도 npm install 명령어 하나로 모두 설치 가능
+
+### 6. NodeJS 실행
+> NodeJS 프로젝트 준비가 완료되었다. 정상적으로 설치 되었는지 확인해보자
+> node index.js 명령어를 수행하여 node 를 실행한다.
+```console
+C:\dockers\tutorial>node index.js
+Listening port : 3000
+```
+> 인터넷 브라우저를 이용하여 127.0.0.1:3000 에 접속
+![request to node](/assets/img/blog/2019-12-12-docker-nodejs-mysql/2019-12-12-18-10-33.png)
