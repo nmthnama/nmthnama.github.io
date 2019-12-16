@@ -14,7 +14,7 @@ icon: icon-html
 ### 1) Docker toolbox 
 > Windows 10 home 버전 이하에서는 Docker Desktop을 설치하지 못하기 때문에 설치해야 대용으로 설치하는 프로그램
 > ([document](https://docs.docker.com/toolbox/toolbox_install_windows/)), ([download](https://github.com/docker/toolbox/releases)))
-### 2) Nodejs
+### 2) NodeJS
 > Docker toolbox 에서 virutal box 에 자동으로 설치해주지만 로컬에서도 nodejs project 를 생성하고 테스트해봐야 하기 때문에 설치해줍니다.
 
 ## 2. NodeJS 프로젝트 생성
@@ -86,7 +86,6 @@ var server = app.listen(port, function () {
     console.log("Listening port : " + server.address().port);
 });
 
-
 app.get('/', function (req, res) {
     res.send('Hello Nodejs');
 });
@@ -101,7 +100,6 @@ app.get("/dbcall", function (req, res) {
             return;
         }
         console.log(rows[0].printtext);
-        // res.render('index', { title: 'Express', printtext: rows[0].printtext });
         res.send(rows[0].printtext);
         
       });
@@ -147,7 +145,7 @@ removed 16 packages and updated 2 packages in 8.183s
 > package.json 의 dependencies 항목에 express 와 mysql 패키지가 save 된 것을 확인할 수 있다<br>
 > ※ package.json 파일이 있는 폴더에서 npm install 명령어를 수행하면 dependencies 에 등록된 패키지가 자동으로 설치된다. 즉, 어떤 패키지가 필요한 지 일일히 찾아보지 않고도 npm install 명령어 하나로 모두 설치 가능
 
-### 6. NodeJS 실행
+### 6) NodeJS 실행
 > NodeJS 프로젝트 준비가 완료되었다. 정상적으로 설치 되었는지 확인해보자
 > node index.js 명령어를 수행하여 node 를 실행한다.
 ```console
@@ -156,3 +154,43 @@ Listening port : 3000
 ```
 > 인터넷 브라우저를 이용하여 127.0.0.1:3000 에 접속
 ![request to node](/assets/img/blog/2019-12-12-docker-nodejs-mysql/2019-12-12-18-10-33.png)
+
+## 3. NodeJS, MySQL 이미지 생성
+### 1) NodeJS 의 Dockerfile 생성
+> Dockerfile 이란, 도커 이미지를 자동으로 빌드해주기 위한 명령어를 기재한 파일이다.
+> 각 명령어(ex : FROM, LABEL, RUN, . . .)에 대한 자세한 설명은 공식홈페이지를 참고 ([Link](https://docs.docker.com/engine/reference/builder/))
+```Dockerfile
+FROM node:carbon
+LABEL maintainer "testtest@gmail.com"
+
+#app 폴더 만들기 - NodeJS 어플리케이션 폴더
+RUN mkdir -p /app
+ 
+WORKDIR /app
+ 
+# 도커 이미지로 파일 복사 (참고로 ./ 는 현재 경로를 뜻하는데, 이 Dockerfile 이 위치하고 있는 경로 기준)
+# Syntax : ADD <src>... <dest>
+ADD ./ /app
+ 
+#패키지 파일 받기
+RUN apt-get update
+RUN npm install
+ 
+# express.js 에서 참조하는 배포 환경 변수
+ENV NODE_ENV=production
+ 
+# 컨테이너가 실행될 때 ENTRYPOINT 의 파라미터로 전달
+CMD node index.js
+```
+> 한 가지 주의 깊게 봐야할 부분은 CMD 부분인데, CMD 의 인자들은 ENTRYPOINT 의 파라미터로 전달되는 값이다.<br>
+> 위 Dockerfile 은 ENTRYPOINT 를 지정하지 않았으므로 CMD 자체가 명령어가 될 수 있다.<br>
+> 그러므로 CMD node index.js 는 아래와 같이 변형할 수 있다.<br>
+```Dockerfile
+#CMD node index.js
+ENTRYPOINT node
+CMD ["index.js"]
+```
+> ENTRYPOINT 와 CMD 의 combination 과 관련된 정보는 공식 가이드에 자세히 설명 되어 있으니 참고([Link](https://docs.docker.com/engine/reference/builder/))
+### 2) MySQL 의 Dockerfile 생성
+> mysql 폴더를 생성하고 그 아래에 Dockerfile 를 생성
+> 
