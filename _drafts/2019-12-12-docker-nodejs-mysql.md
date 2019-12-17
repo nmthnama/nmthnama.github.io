@@ -155,9 +155,9 @@ Listening port : 3000
 > 인터넷 브라우저를 이용하여 127.0.0.1:3000 에 접속
 ![request to node](/assets/img/blog/2019-12-12-docker-nodejs-mysql/2019-12-12-18-10-33.png)
 
-## 3. NodeJS, MySQL 이미지 생성
+## 3. NodeJS, MySQL 이미지 생성 및 컨테이너 실행
 ### 1) NodeJS 의 Dockerfile 생성
-> Dockerfile 이란, 도커 이미지를 자동으로 빌드해주기 위한 명령어를 기재한 파일이다.
+> Dockerfile 이란, 도커 이미지를 자동으로 빌드해주기 위한 명령어들을 기재한 파일이다.
 > 각 명령어(ex : FROM, LABEL, RUN, . . .)에 대한 자세한 설명은 공식홈페이지를 참고 ([Link](https://docs.docker.com/engine/reference/builder/))
 ```Dockerfile
 FROM node:carbon
@@ -193,4 +193,10 @@ CMD ["index.js"]
 > ENTRYPOINT 와 CMD 의 combination 과 관련된 정보는 공식 가이드에 자세히 설명 되어 있으니 참고([Link](https://docs.docker.com/engine/reference/builder/))
 ### 2) MySQL 의 Dockerfile 생성
 > mysql 폴더를 생성하고 그 아래에 Dockerfile 를 생성
-> 
+
+### 3) compose file 생성
+> compose 파일이란, 각 컨테이너가 실행될 때 수행되는 파라미터를 정의한 파일이다.<br>
+> 즉, 위에서 생성한 dockerfile 들을 참조하여 컨테이너를 실행할 때마다 매번 옵션을 지정해주지 않고, 파일에 미리 옵션을 정의해서 간편하게 실행시키는 것을 가능하게 하는 파일이다.<br>
+> Nodejs 와 mysql 의 dockerfile 을 참조하여 컨테이너를 생성하고 실행하게 해주는 compose 파일은 아래와 같다
+
+## 4. DB 에 테이블 생성하고 nodejs 를 통해 접근하기
