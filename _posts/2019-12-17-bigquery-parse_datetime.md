@@ -7,7 +7,7 @@
 >   + 에러 내용) Invalid timestamp: '2019-12-10 07:32:40:836'<br>
 >   + 문제 분석)
 >       * string 은 [bigquery 변환 규칙](https://cloud.google.com/bigquery/docs/reference/standard-sql/conversion_rules?hl=ko)에 따르면 timestamp 로 변환이 가능하다<br>
-![conversion rule for string](2019-12-17-10-33-54.png)<br>
+![conversion rule for string](/assets/img/blog/2019-12-17-bigquery-parse_datetime/2019-12-19-17-39-18.png)
 >       * 그럼에도 불구하고 위 쿼리에서 에러가 발생한 이유는 string expression 이 timestamp literal 과 일치하지 않기 때문
 >       * timestamp literal 에 맞게 변환해줘야 함 <br>
 >       * 문제가 되는건 초(40)와 밀리초(836) 사이의 문자가 '.' 이 아니라 ':' 로 되어 있기 때문....[date time literal](https://cloud.google.com/bigquery/docs/reference/standard-sql/lexical?hl=ko#datetime-literals) <br>
