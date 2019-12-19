@@ -16,7 +16,9 @@ icon: icon-html
 > ([document](https://docs.docker.com/toolbox/toolbox_install_windows/)), ([download](https://github.com/docker/toolbox/releases)))
 ### 2) NodeJS
 > Docker toolbox 에서 virutal box 에 자동으로 설치해주지만 로컬에서도 nodejs project 를 생성하고 테스트해봐야 하기 때문에 설치해줍니다.
-
+### 3) HeidiSQL
+> DB 에 접근하기 위한 MySQL 프론트엔드. HeidiSQL 외에 MySQL Workbench 등을 사용해도 됨<br>
+> [top 5 mysql gui tools for windows](https://www.eversql.com/top-5-mysql-gui-tools-for-windows/)
 ## 2. NodeJS 프로젝트 생성
 > 이미 생성한 NodeJS 프로젝트가 있다면 Skip 가능합니다. 
 ### 1) 빈폴더(tutorial) 생성
@@ -187,7 +189,7 @@ CMD node index.js
 > 그러므로 CMD node index.js 는 아래와 같이 변형할 수 있다.<br>
 ```Dockerfile
 #CMD node index.js
-ENTRYPOINT node
+ENTRYPOINT ["node"]
 CMD ["index.js"]
 ```
 > ENTRYPOINT 와 CMD 의 combination 과 관련된 정보는 공식 가이드에 자세히 설명 되어 있으니 참고([Link](https://docs.docker.com/engine/reference/builder/))
@@ -198,5 +200,40 @@ CMD ["index.js"]
 > compose 파일이란, 각 컨테이너가 실행될 때 수행되는 파라미터를 정의한 파일이다.<br>
 > 즉, 위에서 생성한 dockerfile 들을 참조하여 컨테이너를 실행할 때마다 매번 옵션을 지정해주지 않고, 파일에 미리 옵션을 정의해서 간편하게 실행시키는 것을 가능하게 하는 파일이다.<br>
 > Nodejs 와 mysql 의 dockerfile 을 참조하여 컨테이너를 생성하고 실행하게 해주는 compose 파일은 아래와 같다
+
+```yml
+# docker-compose의 버전을 명시. 버전별로 명령어등의 약간의 차이가 있다.
+version: "2"
+
+services:
+    app:
+        container_name: app
+        build: .
+
+        # 환경변수를 지정
+        environment:
+            NODE_ENV: localhost
+        ports:
+            - 3000:3000
+        # 다른 컨테이너와 연결
+            # Syntax : { SERVICE:ALIAS }
+            # SERVICE 는 다른 컨테이너, ALIAS 는 내 컨테이너에서 SERVICE 를 이용할 때 사용할 별칭
+        links:
+            - db:app_db
+        
+    db:
+        container_name: mysql
+        build: ./mysql
+        ports:
+            - 3306:3306
+        
+        # 데이터 볼륨 지정 : 
+            # 컨테이너는 시작할 때마다 IMAGE 상태로 기동되기 때문에 매번 데이터가 초기화 된다. 
+            # 즉, 컨테이너가 정지되면, 컨테이너 안에서 작업했던 내용이 모두 사라진다.
+            # Syntax : { HOST : CONTAINER }
+        volumes: 
+            - /data/mysql:/var/lib/mysql
+            
+```
 
 ## 4. DB 에 테이블 생성하고 nodejs 를 통해 접근하기
