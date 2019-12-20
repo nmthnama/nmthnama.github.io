@@ -1,3 +1,14 @@
+---
+layout: post
+title:  "how to parse datetime in bigquery"
+date:   2019-12-17
+desc: ""
+keywords: "bigquery, datetime"
+categories: [Database]
+tags: [Jalpc,Jekyll]
+icon: icon-html
+---
+
 ## 1. to-do
 > - 시간을 표현하는 컬럼(string 타입)에서 시간만 추출 <br>
 >   + ex) '2019-12-10 07:32:40:836' 에서 시간을 표현하는 07 만 가져오기
