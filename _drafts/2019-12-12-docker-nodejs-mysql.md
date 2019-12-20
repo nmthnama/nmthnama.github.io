@@ -4,7 +4,7 @@ title:  "Deploy nodejs and mysql through docker toolbox on windows"
 date:   2019-12-12
 desc: "Using docker to install nodejs and mysql"
 keywords: "docker,node,mysql,windows"
-categories: [HTML]
+categories: [Development]
 tags: [docker]
 icon: icon-html
 ---
@@ -154,7 +154,7 @@ removed 16 packages and updated 2 packages in 8.183s
 C:\dockers\tutorial>node index.js
 Listening port : 3000
 ```
-> 인터넷 브라우저를 이용하여 127.0.0.1:3000 에 접속
+> 인터넷 브라우저를 이용하여 127.0.0.1:3000 에 접속<br>
 ![request to node](/assets/img/blog/2019-12-12-docker-nodejs-mysql/2019-12-12-18-10-33.png)
 
 ## 3. NodeJS, MySQL 이미지 생성 및 컨테이너 실행
@@ -184,9 +184,9 @@ ENV NODE_ENV=production
 # 컨테이너가 실행될 때 ENTRYPOINT 의 파라미터로 전달
 CMD node index.js
 ```
-> 한 가지 주의 깊게 봐야할 부분은 CMD 부분인데, CMD 의 인자들은 ENTRYPOINT 의 파라미터로 전달되는 값이다.<br>
-> 위 Dockerfile 은 ENTRYPOINT 를 지정하지 않았으므로 CMD 자체가 명령어가 될 수 있다.<br>
-> 그러므로 CMD node index.js 는 아래와 같이 변형할 수 있다.<br>
+> CMD 의 인자들은 ENTRYPOINT 의 파라미터로 전달되는 값이다.<br>
+> 위 Dockerfile 은 ENTRYPOINT 를 지정하지 않았으므로 CMD 명령어가 될 수 있다.<br>
+> ENTRYPOINT 를 설정한다면 아래와 같이 변형할 수 있다.<br>
 ```Dockerfile
 #CMD node index.js
 ENTRYPOINT ["node"]
@@ -195,6 +195,22 @@ CMD ["index.js"]
 > ENTRYPOINT 와 CMD 의 combination 과 관련된 정보는 공식 가이드에 자세히 설명 되어 있으니 참고([Link](https://docs.docker.com/engine/reference/builder/))
 ### 2) MySQL 의 Dockerfile 생성
 > mysql 폴더를 생성하고 그 아래에 Dockerfile 를 생성
+```Dockerfile
+FROM mysql:5.7.28
+
+# 컨테이너의 해당 디렉토리 내용은 호스트에 저장
+VOLUME /var/lib/mysql
+
+# MySQL root 계정 비번
+ENV MYSQL_ROOT_PASSWORD=testtest82
+
+# open port
+EXPOSE 3306
+
+CMD ["mysqld"]
+```
+> MYSQL_ROOT_PASSWORD 는 nodejs 의 index.js 에서 db connection 생성 부분에 정의했던 testtest82 를 입력<br>
+> mysql 서비스 port 는 별다른 설정을 하지 않았기 때문에 기본 포트인 3306 port 를 expose<br>
 
 ### 3) compose file 생성
 > compose 파일이란, 각 컨테이너가 실행될 때 수행되는 파라미터를 정의한 파일이다.<br>
@@ -202,7 +218,6 @@ CMD ["index.js"]
 > Nodejs 와 mysql 의 dockerfile 을 참조하여 컨테이너를 생성하고 실행하게 해주는 compose 파일은 아래와 같다
 
 ```yml
-# docker-compose의 버전을 명시. 버전별로 명령어등의 약간의 차이가 있다.
 version: "2"
 
 services:
@@ -235,5 +250,8 @@ services:
             - /data/mysql:/var/lib/mysql
             
 ```
+> docker-compose의 버전마다 명령어에 일부 차이가 있을 수 있다. 내가 참고한 docker-compose 파일이 2라서 여기서는 2를 쓴다..([버전별 설명](https://docs.docker.com/compose/compose-file/compose-versioning/))<br>
+> 컨테이너는 종료 될 때마다 데이터가 모두 초기화 되기 때문에 DB 안의 데이터가 모두 사라지는걸 방지하기 위해 volume 은 host 의 disk 에 쓰도록 변경해줘야 함 <br>
+> 참고사항 : db 항목에 있는 volumes 에서 host 의 경로인 /data/mysql 은 virtual box 가상머신 안의 /data/mysql 경로 (docker toolbox 기준)<br>
 
 ## 4. DB 에 테이블 생성하고 nodejs 를 통해 접근하기
