@@ -255,3 +255,9 @@ services:
 > 참고사항 : db 항목에 있는 volumes 에서 host 의 경로인 /data/mysql 은 virtual box 가상머신 안의 /data/mysql 경로 (docker toolbox 기준)<br>
 
 ## 4. DB 에 테이블 생성하고 nodejs 를 통해 접근하기
+
+## 5. docker-compose 빌드 & 실행
+> docker-compose build
+> - ※ 주의할 점 : DB 는 재빌드 할 경우 DB 안의 정보가 모두 리셋되니, 초기 세팅 이후에는 docker-compose.yml 의 db 부분만 주석처리하거나, 초기 세팅만 docker-compose build 커맨드를 이용하고, app 에 변경이 있을 경우에는 웹서버 이미지만 재빌드 해야 함
+> docker-compose up -d
+> docker ps
