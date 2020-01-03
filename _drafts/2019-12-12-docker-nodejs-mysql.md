@@ -12,7 +12,7 @@ icon: icon-html
 
 ## 1. Environment
 ### 1) Docker toolbox 
-> Windows 10 home 버전 이하에서는 Docker Desktop을 설치하지 못하기 때문에 설치해야 대용으로 설치하는 프로그램
+> Windows 10 home 버전 이하에서는 Docker Desktop을 설치하지 못하기 때문에 대용으로 설치하는 프로그램
 > ([document](https://docs.docker.com/toolbox/toolbox_install_windows/)), ([download](https://github.com/docker/toolbox/releases)))
 ### 2) NodeJS
 > Docker toolbox 에서 virutal box 에 자동으로 설치해주지만 로컬에서도 nodejs project 를 생성하고 테스트해봐야 하기 때문에 설치해줍니다.
